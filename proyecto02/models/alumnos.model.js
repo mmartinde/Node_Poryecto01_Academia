@@ -1,6 +1,7 @@
 // Importa el módulo mongoose para interactuar con MongoDB y el objeto Schema para definir esquemas de datos.
 const mongoose = require('mongoose');
-const Schema =mongoose.Schema;
+const Schema = mongoose.Schema;
+const Cursos = require ("../models/cursos.model.js");
 
 
 // Define un esquema para los documentos de la colección "alumnos" en MongoDB.
@@ -38,7 +39,8 @@ telefono:{
     required: true,
 },
 curso_id:{
-    type: String,
+    type: Schema.Types.ObjectId, // Modifico el tipo para indicar que es una relacion con otro esquema
+    ref: "Cursos", // Referencia al nombre del modelo de cursos (cursos.model.js, lo define como Cursos en modulo de exportacion)
     required: false,
 },
 
