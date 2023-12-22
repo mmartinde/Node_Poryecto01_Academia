@@ -137,7 +137,7 @@ router.patch("/:id", async (req, res) => {
       req.body.apellidos ? req.body.apellidos.trim() : undefined,
       req.body.nombreTutor ? req.body.nombreTutor.trim() : undefined,
       req.body.dniTutor ? req.body.dniTutor.trim() : undefined,
-      req.body.formaDePago ? req.body.apellidos.trim() : undefined,
+      req.body.formaDePago ? req.body.formaDePago.trim() : undefined,
       req.body.datosBancarios ? req.body.datosBancarios.trim() : undefined,
       req.body.email ? req.body.email.trim() : undefined,
       req.body.telefono ? req.body.telefono.trim() : undefined,
