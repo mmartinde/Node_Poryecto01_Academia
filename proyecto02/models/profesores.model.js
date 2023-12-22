@@ -3,30 +3,26 @@ const mongoose = require('mongoose');
 const Schema =mongoose.Schema
 
 // Define un esquema para los documentos de la colección "profesores" en MongoDB.
-const cursosSchema = new Schema({
-    nivel:{
+const ProfesoresSchema = new Schema({
+    nombre:{
         type: String,
         require: true,
     },
-    dia:{
+    usuario:{
         type: String,
         require: true,
     },
-    hora:{
+    password:{
         type: String,
         require: true,
     },
-    aula: {
-        type: String,
-        require: false,
-    },
-    profesor: {
+    rol: {
         type: String,
         require: false,
     }
     });
     
     
-    const Cursos =mongoose.model('cursos', cursosSchema);
+    const Profesores =mongoose.model('profesores', ProfesoresSchema);
     
-    module.exports = Cursos;
+    module.exports = Profesores;
