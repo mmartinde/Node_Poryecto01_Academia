@@ -55,7 +55,32 @@ function validarCrearAlumno(body){
       }
     }
 }
+
+function validarCrearProfesor (body){
+  if (body.nombre === undefined ||
+      body.nombre.trim() === "" ||
+      body.usuario === undefined ||
+      body.usuario.trim() === "" ||
+      body.password === undefined ||
+      body.password === "" ||
+      body.rol === undefined ||
+      body.rol.trim() === "" 
+    ) {
+     return{
+      valido:false,
+      mensaje: "faltan datos del curso"
+     }
+    }
+    else{
+      return{
+          valido:true,
+          mensaje:null,
+      }
+    }
+}
+
 module.exports ={
-    validarCrearCurso,
-    validarCrearAlumno
+  validarCrearCurso,
+  validarCrearAlumno,
+  validarCrearProfesor
 }

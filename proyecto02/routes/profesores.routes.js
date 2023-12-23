@@ -9,7 +9,7 @@ const {
   modificarProfesor,
 } = require("../controllers/profesores.controller");
 
-const { validarCrearCurso } = require("../helpers/validadores");
+const { validarCrearProfesor } = require("../helpers/validadores");
 
 //CRUD
 /** 
@@ -54,7 +54,7 @@ router.post("/", async (req, res) => {
       req.body.password,
       req.body.rol.trim()
     );
-    if (profesorCreadoCreado) {
+    if (profesorCreado) {
       res.json({ msg: "Profesor creado correctamente" });
     } else {
       res.status(400).json({ msg: "error: faltan datos" });
@@ -69,7 +69,7 @@ router.post("/", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const profesorBorrado = await eliminarProfesor(req.params.id);
-    if (profesorBorradoorrado) {
+    if (profesorBorrado) {
       res.json({ msg: "Profesor borrado" });
     } else {
       res.status(404).json({ msg: "Profesor no encontrado" });
@@ -86,7 +86,7 @@ router.put("/:id", async (req, res) => {
     let encontrado = null;
     let msg = [];
     //comprobación de todos los atributos modificables vienen completos. PUT debe ser completamente ATOMICO
-    const resultadoValidacion = validarCrearCurso(req.body);
+    const resultadoValidacion = validarCrearProfesor(req.body);
     if (!resultadoValidacion.valido) {
       res.status(400).json({ msg: resultadoValidacion.mensaje });
     } else {
