@@ -33,17 +33,22 @@ async function buscarPorId(id) {
 }
 
 /**
- * Crea un nuevo alumno.
- * @param {string} nom - Nombre del alumno.
- * @param {string} ape - Apellidos del alumno.
- * @param {string} tuto - Nombre del tutor del alumno.
- * @param {string} dni - DNI del tutor del alumno.
- * @param {string} pag - Forma de pago del alumno.
- * @param {string} banc - Datos bancarios del alumno.
- * @param {string} mail - Correo electrónico del alumno.
- * @param {string} tlf - Número de teléfono del alumno.
- * @param {string} cur - ID del curso al que pertenece el alumno.
- * @returns {Promise<Object>} Un objeto que representa al nuevo alumno creado.
+ * Crea un nuevo alumno y lo asigna a un curso, si se proporciona.
+ *
+ * Esta función crea un nuevo registro de alumno en la base de datos con los datos proporcionados.
+ * Si se incluye un ID de curso, también añade al alumno al curso especificado. Esto es manejado
+ * mediante la adición del ID del alumno al array de 'alumnos' en el documento del curso.
+ *
+ * @param {String} nom Nombre del alumno.
+ * @param {String} ape Apellidos del alumno.
+ * @param {String} tuto Nombre del tutor del alumno.
+ * @param {String} dni DNI del tutor del alumno.
+ * @param {String} pag Forma de pago del curso.
+ * @param {String} banc Datos bancarios para el pago.
+ * @param {String} mail Email del alumno.
+ * @param {String} tlf Teléfono de contacto del alumno.
+ * @param {String} cur ID del curso al cual asignar al alumno (opcional).
+ * @returns {Object} El objeto del alumno creado.
  */
 async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
   //Trycatch para manejar los casos de alumnos con curso asignado, y sin ellos
@@ -74,11 +79,10 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
     }
     
     res.status(201).json({ msg: `alumno: ${nuevoAlumno} creado`}) //devuelvo codigo 201. Significa que la peticion ha sido exitosa y como resultado se ha creado el alumno (nuevo recurso)
-  } catch (error) {
-    res.status(500).json({ msg: 'error'}) //devuelvo codigo 500. Es un codigo general que me permite proteger al servidor e informar que algo salio mal.
-    
   }
   return nuevoAlumno;
+} catch (error) {
+  res.status(500).json({ msg: 'error'}) //devuelvo codigo 500. Es un codigo general que me permite proteger al servidor e informar que algo salio mal.
 }
 
 /**
