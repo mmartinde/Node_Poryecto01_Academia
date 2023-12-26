@@ -63,23 +63,23 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
       datosBancarios: banc,
       email: mail,
       telefono: tlf,
-      cursos_id: cur
+      cursos: cur
     });
     
-    await nuevoAlumno.save();
-
+    
     // Si el alumno tiene curso asignado, agregalo al curso correspondiente
     if (cur) {
       const curso = await Cursos.findById(cur);
       if (curso) {
         curso.alumnos.push(nuevoAlumno._id); //'.alumnos' hace referencia a la propiedad 'alumnos' en el esquema (el array que contendra la lista de objetos con los alumnos)
-
+        
         await curso.save();
       } else {
         throw new Error('Curso no encontrado');
       }
     }
-  
+    
+    await nuevoAlumno.save();
     return nuevoAlumno;
 
   } catch (error) {
