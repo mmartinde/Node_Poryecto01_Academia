@@ -9,9 +9,9 @@ const {
   modificarProfesor,
 } = require("../controllers/profesores.controller");
 
-const { validarCrearProfesor } = require("../helpers/validadores");
-
-const {middlewareCrearProfesor} = require ("../middlewares/profesores.middleware");
+const {
+  middlewareCrearProfesor,
+} = require("../middlewares/profesores.middleware");
 
 //CRUD
 /** 
@@ -33,14 +33,7 @@ router.get("/", async (req, res) => {
 });
 
 //obtener producto por id de la BBDD
-/* function middlewareEncontrado (req,res,next){
-  const profesorEncontrado = buscarPorId(req.params.id);
-  if (profesorEncontrado.valido) {
-    next ();
-}else{
-  res.status(404).json({ msg: "error: profesor no encontrado" });
-}
-} */
+
 router.get("/:id", async (req, res) => {
   try {
     const profesorEncontrado = await buscarPorId(req.params.id);
@@ -65,7 +58,7 @@ router.post("/", middlewareCrearProfesor, async (req, res) => {
       req.body.password,
       req.body.rol.trim()
     );
-      res.json({ msg: "Profesor creado correctamente" });
+    res.json({ msg: "Profesor creado correctamente" });
   } catch (error) {
     console.log(String(error));
     res.status(500).json({ msg: "error interno" });
@@ -117,26 +110,27 @@ router.put("/:id", async (req, res) => {
 });
 
 router.patch("/:id", async (req, res) => {
- try {
-   let encontrado = null;
-   // solamente varío los atributos que yo considero que se podrían tocar
-   encontrado = await modificarProfesor(
-     req.params.id,
-     req.body.nombre ? req.body.nombre.trim() : undefined,
-     req.body.usuario ? req.body.usuario.trim() : undefined,
-     req.body.password ? req.body.password : undefined,
-     req.body.rol ? req.body.rol.trim() : undefined
-   );
- 
-   res.status(encontrado ? 200 : 400).json({
+  try {
+    let encontrado = null;
+    // solamente varío los atributos que yo considero que se podrían tocar
+    encontrado = await modificarProfesor(
+      req.params.id,
+      req.body.nombre ? req.body.nombre.trim() : undefined,
+      req.body.usuario ? req.body.usuario.trim() : undefined,
+      req.body.password ? req.body.password : undefined,
+      req.body.rol ? req.body.rol.trim() : undefined
+    );
+
+    res.status(encontrado ? 200 : 400).json({
       encontrado: encontrado,
-      mensajes: encontrado ? [] : ["Error: profesor no encontrado", `ID: ${req.params.id}`],
-    }
-   );
+      mensajes: encontrado
+        ? []
+        : ["Error: profesor no encontrado", `ID: ${req.params.id}`],
+    });
   } catch (error) {
     console.error("Error en la modificación del profesor:", error);
     res.status(500).json({ msg: "Error interno en el servidor" });
- }
+  }
 });
 
 // Exportar la información entre ficheros, para ser importado desde otro fichero
