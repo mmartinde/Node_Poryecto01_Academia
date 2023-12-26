@@ -1,5 +1,6 @@
 // Importa el modelo "Alumnos" que representa la colección de alumnos en MongoDB.
 const Alumnos = require("../models/alumnos.model");
+const Cursos = require("../models/cursos.model"); // Importa schema de cursos
 
 /**
  * Busca y devuelve todos los alumnos.
@@ -34,7 +35,7 @@ async function buscarPorId(id) {
  * @returns {Promise<Object>} Un objeto que representa al nuevo alumno creado.
  */
 async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
-  const nuevoAlumno = new Alumnos({
+  const nuevoAlumno = new Alumno({
     nombre: nom,
     apellidos: ape,
     nombreTutor: tuto,
@@ -44,6 +45,7 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
     email: mail,
     telefono: tlf,
     curso_id: cur
+    
   });
   await nuevoAlumno.save();
   return nuevoAlumno;
@@ -87,6 +89,8 @@ async function modificarAlumno(id, nom, ape, tuto, dni, pag, banc, mail, tlf, cu
   });
   return alumnoModificar;
 }
+
+
 
 // Exporta las funciones para su uso en alumnos.routes.js
 module.exports = {
