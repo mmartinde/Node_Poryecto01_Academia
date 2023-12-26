@@ -52,23 +52,19 @@ router.get("/:id", async (req, res) => {
 // Ruta para crear un nuevo alumno.
 router.post("/", async (req, res) => {
   try {
-    const alumnoCreado = await crearAlumno(
+    const nuevoAlumno = await crearAlumno(
       req.body.nombre.trim(),
-      req.body.apellidos,
+      req.body.apellidos.trim(),
       req.body.nombreTutor.trim(),
       req.body.dniTutor.trim(),
       req.body.formaDePago.trim(),
       req.body.datosBancarios.trim(),
       req.body.email.trim(),
-      req.body.telefono.trim(),
+      req.body.telefono,
       req.body.curso_id.trim()
     );
-    if (alumnoCreado) {
-      res.json({ msg: "Alumno creado correctamente" });
-    } else {
-      res.status(400).json({ msg: "error: faltan datos" });
-    }
-  } catch (error) {
+    res.status(201).json({ msg: 'alumno creado correctamente' })
+    } catch (error) {
     console.log(String(error));
     res.status(500).json({ msg: "error interno" });
   }

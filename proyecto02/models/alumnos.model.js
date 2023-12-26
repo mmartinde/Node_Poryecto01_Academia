@@ -35,7 +35,7 @@ email:{
     required: true,
 },
 telefono:{
-    type: String,
+    type: Number,
     required: true,
 },
 curso_id:{

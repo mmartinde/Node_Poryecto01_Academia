@@ -7,8 +7,12 @@ const Cursos = require("../models/cursos.model"); // Importa schema de cursos
  * @returns {Promise<Array>} Un array que contiene todos los alumnos.
  */
 async function buscarTodos() {
-  const usuario = await Alumnos.find();
-  return usuario;
+  try{
+    const alumnos = await Alumnos.find();
+    return alumnos;
+  } catch (error) {
+    throw new Error('Error al buscar lista de alumnos')
+  }
 }
 
 /**
@@ -23,12 +27,10 @@ async function buscarTodos() {
  */
 async function buscarPorId(id) {
   try {
-    const alumnoEncontrado = await Alumnos.findById(id).populate('curso_id'); //Cambio nombre de variable, para mantener coherencia con la app. Uso el metodo .populate en 'curso_id' para mostrar curso, y no el ID del curso solamente
-    if (!alumnoEncontrado) {
-      return res.status(404).json({ msg: 'alumno no encontrado'});
-    }
+    const alumnoEncontrado = await Alumnos.findById(id).populate('curso'); //Cambio nombre de variable, para mantener coherencia con la app. Uso el metodo .populate en 'curso_id' para mostrar curso, y no el ID del curso solamente
+    return (alumnoEncontrado); //retorna el alumno, o null si no existe
   } catch (error) {
-    res.status(500).json({ msg: 'error'})
+    throw new Error('Error al buscar alumno por ID')
   }
 }
 
@@ -46,7 +48,7 @@ async function buscarPorId(id) {
  * @param {String} pag Forma de pago del curso.
  * @param {String} banc Datos bancarios para el pago.
  * @param {String} mail Email del alumno.
- * @param {String} tlf Teléfono de contacto del alumno.
+ * @param {Number} tlf Teléfono de contacto del alumno.
  * @param {String} cur ID del curso al cual asignar al alumno (opcional).
  * @returns {Object} El objeto del alumno creado.
  */
@@ -54,7 +56,7 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
   //Trycatch para manejar los casos de alumnos con curso asignado, y sin ellos
   try {
     //Crear el nuevo alumno
-    const nuevoAlumno = new Alumno({
+    const nuevoAlumno = new Alumnos({
       nombre: nom,
       apellidos: ape,
       nombreTutor: tuto,
@@ -65,7 +67,7 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
       telefono: tlf,
       curso_id: cur
     });
-    
+    console.log
     await nuevoAlumno.save();
 
     // Si el alumno tiene curso asignado, agregalo al curso correspondiente
@@ -77,12 +79,12 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
         await curso.save();
       }
     }
-    
-    res.status(201).json({ msg: `alumno: ${nuevoAlumno} creado`}) //devuelvo codigo 201. Significa que la peticion ha sido exitosa y como resultado se ha creado el alumno (nuevo recurso)
+  
+    return nuevoAlumno;
+
+  } catch (error) {
+    throw new Error('Error al crear alumno')
   }
-  return nuevoAlumno;
-} catch (error) {
-  res.status(500).json({ msg: 'error'}) //devuelvo codigo 500. Es un codigo general que me permite proteger al servidor e informar que algo salio mal.
 }
 
 /**
@@ -91,8 +93,13 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
  * @returns {Promise<Object|null>} Un objeto que representa al alumno eliminado o null si no se encuentra.
  */
 async function eliminarAlumno(id) {
-  const alumnoBorrado = await Alumnos.findByIdAndDelete(id);
-  return alumnoBorrado;
+  try {
+    const alumnoBorrado = await Alumnos.findByIdAndDelete(id);
+    return alumnoBorrado;
+    
+  } catch (error) {
+    throw new Error('Error al eliminar Alumno');
+  }
 }
 
 /**

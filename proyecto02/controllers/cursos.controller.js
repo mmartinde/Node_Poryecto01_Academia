@@ -1,4 +1,4 @@
-const Curso = require("../models/cursos.mode");
+const Curso = require("../models/cursos.model");
 
 async function buscarTodos() {
   const cursos = await Curso.find();
