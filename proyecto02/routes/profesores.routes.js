@@ -11,6 +11,8 @@ const {
 
 const { validarCrearProfesor } = require("../helpers/validadores");
 
+const {middlewareCrearProfesor} = require ("../middlewares/profesores.middleware");
+
 //CRUD
 /** 
  C: CREATE
@@ -31,6 +33,14 @@ router.get("/", async (req, res) => {
 });
 
 //obtener producto por id de la BBDD
+/* function middlewareEncontrado (req,res,next){
+  const profesorEncontrado = buscarPorId(req.params.id);
+  if (profesorEncontrado.valido) {
+    next ();
+}else{
+  res.status(404).json({ msg: "error: profesor no encontrado" });
+}
+} */
 router.get("/:id", async (req, res) => {
   try {
     const profesorEncontrado = await buscarPorId(req.params.id);
@@ -46,7 +56,8 @@ router.get("/:id", async (req, res) => {
 });
 
 //Añadimos un procunto nuevo a la BBDD
-router.post("/", async (req, res) => {
+
+router.post("/", middlewareCrearProfesor, async (req, res) => {
   try {
     const profesorCreado = await crearProfesor(
       req.body.nombre.trim(),
@@ -54,11 +65,7 @@ router.post("/", async (req, res) => {
       req.body.password,
       req.body.rol.trim()
     );
-    if (profesorCreado) {
       res.json({ msg: "Profesor creado correctamente" });
-    } else {
-      res.status(400).json({ msg: "error: faltan datos" });
-    }
   } catch (error) {
     console.log(String(error));
     res.status(500).json({ msg: "error interno" });
