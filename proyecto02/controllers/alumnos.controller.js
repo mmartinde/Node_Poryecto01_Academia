@@ -12,13 +12,24 @@ async function buscarTodos() {
 }
 
 /**
- * Busca y devuelve un alumno por su ID.
- * @param {string} id - El ID del alumno a buscar.
- * @returns {Promise<Object|null>} Un objeto que representa al alumno encontrado o null si no se encuentra.
+ * Busca un alumno por su ID.
+ *
+ * Esta función realiza una búsqueda en la base de datos para encontrar un alumno específico
+ * utilizando su ID como parámetro. Utiliza el método `populate` para reemplazar el campo
+ * 'curso_id' con los datos detallados del curso asociado, en lugar de solo mostrar el ID del curso.
+ * 
+ * @param {String} id El ID del alumno que se desea buscar.
+ * @returns {Object|Null} Retorna el objeto del alumno si se encuentra, o null si el alumno no existe.
  */
 async function buscarPorId(id) {
-  const usuarioEncontrado = await Alumnos.findById(id);
-  return usuarioEncontrado;
+  try {
+    const alumnoEncontrado = await Alumnos.findById(id).populate('curso_id'); //Cambio nombre de variable, para mantener coherencia con la app. Uso el metodo .populate en 'curso_id' para mostrar curso, y no el ID del curso solamente
+    if (!alumnoEncontrado) {
+      return res.status(404).json({ msg: 'alumno no encontrado'});
+    }
+  } catch (error) {
+    res.status(500).json({ msg: 'error'})
+  }
 }
 
 /**
