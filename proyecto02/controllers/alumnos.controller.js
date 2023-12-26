@@ -35,19 +35,38 @@ async function buscarPorId(id) {
  * @returns {Promise<Object>} Un objeto que representa al nuevo alumno creado.
  */
 async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
-  const nuevoAlumno = new Alumno({
-    nombre: nom,
-    apellidos: ape,
-    nombreTutor: tuto,
-    dniTutor: dni,
-    formaDePago: pag,
-    datosBancarios: banc,
-    email: mail,
-    telefono: tlf,
-    curso_id: cur
+  //Trycatch para manejar los casos de alumnos con curso asignado, y sin ellos
+  try {
+    //Crear el nuevo alumno
+    const nuevoAlumno = new Alumno({
+      nombre: nom,
+      apellidos: ape,
+      nombreTutor: tuto,
+      dniTutor: dni,
+      formaDePago: pag,
+      datosBancarios: banc,
+      email: mail,
+      telefono: tlf,
+      curso_id: cur
+    });
     
-  });
-  await nuevoAlumno.save();
+    await nuevoAlumno.save();
+
+    // Si el alumno tiene curso asignado, agregalo al curso correspondiente
+    if (requestAnimationFrame.body.curso_id) {
+      const curso = await Cursos.findById(req.body.curso_id);
+      if (curso) {
+        curso.alumnos.push(nuevoAlumno._id); //'.alumnos' hace referencia a la propiedad 'alumnos' en el esquema (el array que contendra la lista de objetos con los alumnos)
+
+        await curso.save();
+      }
+    }
+    
+    res.status(201).json({ msg: `alumno: ${nuevoAlumno} creado`}) //devuelvo codigo 201. Significa que la peticion ha sido exitosa y como resultado se ha creado el alumno (nuevo recurso)
+  } catch (error) {
+    res.status(500).json({ msg: 'error'}) //devuelvo codigo 500. Es un codigo general que me permite proteger al servidor e informar que algo salio mal.
+    
+  }
   return nuevoAlumno;
 }
 
