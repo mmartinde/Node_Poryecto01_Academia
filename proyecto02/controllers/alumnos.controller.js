@@ -19,15 +19,13 @@ async function buscarTodos() {
  * Busca un alumno por su ID.
  *
  * Esta función realiza una búsqueda en la base de datos para encontrar un alumno específico
- * utilizando su ID como parámetro. Utiliza el método `populate` para reemplazar el campo
- * 'curso_id' con los datos detallados del curso asociado, en lugar de solo mostrar el ID del curso.
- * 
+ * utilizando su ID como parámetro.
  * @param {String} id El ID del alumno que se desea buscar.
  * @returns {Object|Null} Retorna el objeto del alumno si se encuentra, o null si el alumno no existe.
  */
 async function buscarPorId(id) {
   try {
-    const alumnoEncontrado = await Alumnos.findById(id).populate('curso'); //Cambio nombre de variable, para mantener coherencia con la app. Uso el metodo .populate en 'curso_id' para mostrar curso, y no el ID del curso solamente
+    const alumnoEncontrado = await Alumnos.findById(id); //Cambio nombre de variable, para mantener coherencia con la app.
     return (alumnoEncontrado); //retorna el alumno, o null si no existe
   } catch (error) {
     throw new Error('Error al buscar alumno por ID')
@@ -65,24 +63,27 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
       datosBancarios: banc,
       email: mail,
       telefono: tlf,
-      curso_id: cur
+      cursos_id: cur
     });
-    console.log
+    
     await nuevoAlumno.save();
 
     // Si el alumno tiene curso asignado, agregalo al curso correspondiente
-    if (req.body.curso_id) {
-      const curso = await Cursos.findById(req.body.curso_id);
+    if (cur) {
+      const curso = await Cursos.findById(cur);
       if (curso) {
         curso.alumnos.push(nuevoAlumno._id); //'.alumnos' hace referencia a la propiedad 'alumnos' en el esquema (el array que contendra la lista de objetos con los alumnos)
 
         await curso.save();
+      } else {
+        throw new Error('Curso no encontrado');
       }
     }
   
     return nuevoAlumno;
 
   } catch (error) {
+    console.log(error)
     throw new Error('Error al crear alumno')
   }
 }

@@ -51,17 +51,18 @@ router.get("/:id", async (req, res) => {
 
 // Ruta para crear un nuevo alumno.
 router.post("/", async (req, res) => {
+  // Agrego el operador '?' luego del req para asegurarme que si hay undefined o null haga cortocircuito y devuelva un undefined sin hacer el trim
   try {
     const nuevoAlumno = await crearAlumno(
-      req.body.nombre.trim(),
-      req.body.apellidos.trim(),
-      req.body.nombreTutor.trim(),
-      req.body.dniTutor.trim(),
-      req.body.formaDePago.trim(),
-      req.body.datosBancarios.trim(),
-      req.body.email.trim(),
+      req.body.nombre?.trim(),
+      req.body.apellidos?.trim(),
+      req.body.nombreTutor?.trim(),
+      req.body.dniTutor?.trim(),
+      req.body.formaDePago?.trim(),
+      req.body.datosBancarios?.trim(),
+      req.body.email?.trim(),
       req.body.telefono,
-      req.body.curso_id.trim()
+      req.body.curso_id?.trim()
     );
     res.status(201).json({ msg: 'alumno creado correctamente' })
     } catch (error) {
