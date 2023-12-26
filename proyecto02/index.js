@@ -34,6 +34,7 @@ mongoose.connect('mongodb+srv://manuma:sZIJnRZAz8s4fwJg@cluster0.hspjmtk.mongodb
 // Utiliza el enrutador de productos para manejar las rutas bajo '/alumnos' & '/productos'.
 app.use('/alumnos',require('./routes/alumnos.routes'));
 app.use('/cursos',require('./routes/cursos.routes'));
+app.use('/profesores',require('./routes/profesores.routes'));
 
 //es otra forma de importar el enrutador para manejar la ruta '/cursos' y '/alumnos'.
 //app.use('/productos', productoRouter); 

@@ -1,13 +1,23 @@
-descripcion: hacer una API con Node, Express y Mongodb. Elige un caso de uso que te motive (tienda online, club deportivo, concesionario, biblioteca ...) y realiza una API para acceder y almacenar datos.
+Buenas tardes chic@s, os dejo los requerimientos para el segundo proyecto de Node.js
+Requerimientos para proyecto 2 
 
-requisitos: 
-i) Debes usar Mongo Atlas para alojar tu base de datos en la nube. 
-ii) Debes usar Node, Express.js y Mongoose para conectar con mongo. 
-iii) Como mínimo debes definir 2 esquemas - Ejemplo: Si vendes productos en tu tienda, al menos define los esquemas producto y usuario git git
-    - Ejemplo: Si modelas una biblioteca, al menos define los esquemas libro y autor 
-    - Ejemplo: Si modelas un concesionario, al menos define los esquemas coche y cliente. 
-iv) Como mínimo debes desarrollar 1 ruta GET, 1 ruta POST y 1 ruta DELETE para cada esquema 
-v) Debes usar arquitectura limpia. Separa y organiza en distintas carpetas el proyecto. Ejemplo: 
+fecha entrega límite: 9 de enero de 2024 a las 23:59
+modo de entrega: enviar enlace de repositorio github público a oscar.martinez@bootcamp-upgrade.com
+descripción: seguir con el resultado del proyecto 1 e incluir nuevas funcionalidades
+organización de equipos: individual o por parejas
+ 
+requisitos:
+    i) Cumplir los requisitos del proyecto 1
+    ii) Como mínimo desarrollar 1 ruta PUT y 1 ruta PATCH.
+    iii) Que los usuarios se puedan registrar y luego loggear mediante JWT (estrategia de tokens).
+    iv) Como mínimo una ruta privada (que solo sea accesible mediante validación de token). Que solo pueda acceder el dueño del recurso.
+    v) Como mínimo una ruta autorizada (que solo sea accesible mediante rol). Que solo pueda acceder el usuario que pertenece a ese rol (antes tendrás que agregar un atributo `rol` al schema de tu usuario).
+    vi) Las contraseñas deben guardarse encriptadas usando cifrado con biblioteca bcryptjs.
+    vii) En la definición de esquemas debe modelarse como mínimo una relación entre dos esquemas (usa ObjectId y ref).
+    viii) Debes usar arquitectura limpia. Separa y organiza en distintas carpetas el proyecto tal y como hiciste en el primer proyecto.
+
+
+Usar arquitectura limpia. Separa y organiza en distintas carpetas el proyecto. 
 . └── proyecto/ 
 ├── controllers/ 
 │ 
