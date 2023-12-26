@@ -53,7 +53,7 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
     await nuevoAlumno.save();
 
     // Si el alumno tiene curso asignado, agregalo al curso correspondiente
-    if (requestAnimationFrame.body.curso_id) {
+    if (req.body.curso_id) {
       const curso = await Cursos.findById(req.body.curso_id);
       if (curso) {
         curso.alumnos.push(nuevoAlumno._id); //'.alumnos' hace referencia a la propiedad 'alumnos' en el esquema (el array que contendra la lista de objetos con los alumnos)
