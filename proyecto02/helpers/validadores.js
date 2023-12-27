@@ -39,20 +39,19 @@ function validarCrearAlumno(body){
       body.email === undefined ||
       body.email.trim() === "" ||
       body.telefono === undefined ||
-      body.telefono.trim() === "" ||
-      body.curso_id === undefined ||
-      body.curso_id.trim() === ""
+      body.curso === undefined ||
+      body.curso.trim() === ""
     ) {
      return{
       valido:false,
       mensaje: "faltan datos del alumno"
-     }
+     };
     }
     else{
       return{
           valido:true,
           mensaje:null,
-      }
+      };
     }
 }
 

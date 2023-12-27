@@ -14,6 +14,7 @@ const {
 } = require("../controllers/alumnos.controller");
 
 const { validarCrearAlumno } = require("../helpers/validadores");
+const { validarAlumno } = require("../middlewares/alumnos.middleware");
 
 //CRUD
 /** 
@@ -87,38 +88,38 @@ router.delete("/:id", async (req, res) => {
 });
 
 // Ruta para actualizar un alumno por su ID.
-router.put("/:id", async (req, res) => {
+router.put("/:id", validarAlumno, async (req, res) => {
   try {
-    let encontrado = null;
-    let msg = [];
+    const alumnoActualizado = await modificarAlumno(req.params.id, req.body); //req.params.id contiene el id a actualizar, req.body contiene las propiedades del objeto a ser modificadas
+    res.json({ dato: alumnoActualizado });
+    // let encontrado = null;
+    // let msg = [];
 
-    // Validación de datos antes de intentar la modificación.
-    const resultadoValidacion = validarCrearAlumno(req.body);
-    if (!resultadoValidacion.valido) {
-      res.status(400).json({ msg: resultadoValidacion.mensaje });
-    } else {
-      // Modificación del alumno.
-      encontrado = await modificarAlumno(
-        req.params.id,
-        req.body.nombre,
-        req.body.apellidos,
-        req.body.nombreTutor,
-        req.body.dniTutor,
-        req.body.formaDePago,
-        req.body.datosBancarios,
-        req.body.email,
-        req.body.telefono,
-        req.body.curso_id
-      );
-      res.json(
-        encontrado === null
-          ? { msg: "error: alumno no encontrado" }
-          : { dato: encontrado, mensaje: msg }
-      );
-    }
+    // // Validación de datos antes de intentar la modificación.
+    // const resultadoValidacion = validarCrearAlumno(req.body);
+    // if (!resultadoValidacion.valido) {
+    //   res.status(400).json({ msg: resultadoValidacion.mensaje });
+    // } else {
+    //   // Modificación del alumno.
+    //   encontrado = await modificarAlumno(
+    //     req.params.id,
+    //     req.body.nombre,
+    //     req.body.apellidos,
+    //     req.body.nombreTutor,
+    //     req.body.dniTutor,
+    //     req.body.formaDePago,
+    //     req.body.datosBancarios,
+    //     req.body.email,
+    //     req.body.telefono,
+    //     req.body.curso
+    //   );
+    //   res.json(encontrado === null ? { msg: "error: alumno no encontrado" } : { dato: encontrado, mensaje: msg });
+    // }
   } catch (error) {
-    console.error("Error en la modificación del alumno:", error);
-    res.status(500).json({ msg: "Error interno en el servidor" });
+    console.error("Error en la mofidicacion del alumno:", error);
+    res.status(500).json({ msg: "error interno ene l servidor" })
+    // console.error("Error en la modificación del alumno:", error);
+    // res.status(500).json({ msg: "Error interno en el servidor" });
   }
 });
 

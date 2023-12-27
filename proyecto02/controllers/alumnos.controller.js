@@ -104,32 +104,41 @@ async function eliminarAlumno(id) {
 }
 
 /**
- * Modifica un alumno por su ID.
- * @param {string} id - El ID del alumno a modificar.
- * @param {string} nom - Nuevo nombre del alumno.
- * @param {string} ape - Nuevos apellidos del alumno.
- * @param {string} tuto - Nuevo nombre del tutor del alumno.
- * @param {string} dni - Nuevo DNI del tutor del alumno.
- * @param {string} pag - Nueva forma de pago del alumno.
- * @param {string} banc - Nuevos datos bancarios del alumno.
- * @param {string} mail - Nuevo correo electrónico del alumno.
- * @param {string} tlf - Nuevo número de teléfono del alumno.
- * @param {string} cur - Nuevo ID del curso al que pertenece el alumno.
- * @returns {Promise<Object|null>} Un objeto que representa al alumno modificado o null si no se encuentra.
+ * Modifica un alumno existente por su ID (actualiza).
+ * 
+ * Esta función busca primero un alumno por su ID para verificar si existe.
+ * Si el alumno existe, procede a actualizarlo con los datos proporcionados.
+ * Si el alumno no se encuentra, lanza un error.
+ *
+ * @param {string} id - El ID único del alumno a actualizar.
+ * @param {Object} datosAlumno - Un objeto que contiene los datos del alumno a actualizar. Este objeto podría incluir campos como nombre, apellidos, email, etc.
+ * @returns {Promise<Object>} - Promesa que resuelve al objeto del alumno actualizado. Si el alumno no se encuentra, la promesa rechaza con un error.
+ * @throws {Error} - Lanza un error si el alumno no se encuentra en la base de datos.
+ *
  */
-async function modificarAlumno(id, nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
-  const alumnoModificar = await Alumnos.findByIdAndUpdate(id, {
-    nombre: nom,
-    apellidos: ape,
-    nombreTutor: tuto,
-    dniTutor: dni,
-    formaDePago: pag,
-    datosBancarios: banc,
-    email: mail,
-    telefono: tlf,
-    curso_id: cur
-  });
-  return alumnoModificar;
+async function modificarAlumno(id, datosAlumno) {
+  // Verificar si el alumno existe
+  const alumnoExistente = await Alumnos.findById(id);
+  if (!alumnoExistente) {
+    throw new Error("Alumno no encontrado");
+  }
+  // Realizar la actualizacion
+  const alumnoActualizado = await Alumnos.findByIdAndUpdate(id, datosAlumno, { new: true }); //actualiza el objeto del alumno encontrado por ID, la opcion {new: true} de mongoose para que se devuelva el documento modificado, en vez del original (foundbyIdAndUpdate, devuelve el objeto original)
+  return alumnoActualizado;
+
+  //   const alumnoModificar = await Alumnos.findByIdAndUpdate(id, {
+//     nombre: nom,
+//     apellidos: ape,
+//     nombreTutor: tuto,
+//     dniTutor: dni,
+//     formaDePago: pag,
+//     datosBancarios: banc,
+//     email: mail,
+//     telefono: tlf,
+//     curso: cur
+//   });
+//   return alumnoModificar;
+
 }
 
 
