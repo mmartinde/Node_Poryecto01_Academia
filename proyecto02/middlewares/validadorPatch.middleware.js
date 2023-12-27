@@ -1,5 +1,5 @@
 // Importacion de helper para obtener campos validos
-const { extraerCamposDeEsquema } = require('../helpers/validadores');
+const { extraerCamposDeEsquema } = require('../helpers/extraccion');
 
 /**
  * Middleware para validar los campos de una solicitud PATCH (reusable en cualquier ruta de la app).
