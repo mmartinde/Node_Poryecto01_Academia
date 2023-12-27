@@ -4,6 +4,9 @@ const express = require("express");
 // Crea una instancia del enrutador de Express.
 const router = express.Router();
 
+// Importa schema alumnos para usar en validador patch
+const Alumnos = require('../models/alumnos.model');
+
 // Importa las funciones del controlador y los validadores asociados a los alumnos.
 const {
   buscarTodos,
@@ -11,10 +14,15 @@ const {
   crearAlumno,
   eliminarAlumno,
   modificarAlumno,
+  modificarAlumnoParcialmente
 } = require("../controllers/alumnos.controller");
 
 const { validarCrearAlumno } = require("../helpers/validadores");
 const { validarAlumno } = require("../middlewares/alumnos.middleware");
+const { validarCamposPatch } = require("../middlewares/validadorPatch.middleware");
+
+// usa el validador de campos, y asigna los campos validos a una variable
+const validarCamposAlumnos = validarCamposPatch(Alumnos);
 
 //CRUD
 /** 
@@ -124,30 +132,33 @@ router.put("/:id", validarAlumno, async (req, res) => {
 });
 
 // Ruta para actualizar parcialmente un alumno por su ID.
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", validarCamposAlumnos, async (req, res) => {
   try {
-    let encontrado = null;
+const alumnoActualizado = await modificarAlumnoParcialmente(req.params.id, req.body); //llamo a la funcion asincrona modificarAlumnoParcialmente desde los controllers. Le paso el id y el body de la solicitud.
+
+res.json({ msg: alumnoActualizado });
+
+    // let encontrado = null;
 
     // Modificación parcial del alumno.
-    encontrado = await modificarAlumno(
-      req.params.id,
-      req.body.nombre ? req.body.nombre.trim() : undefined,
-      req.body.apellidos ? req.body.apellidos.trim() : undefined,
-      req.body.nombreTutor ? req.body.nombreTutor.trim() : undefined,
-      req.body.dniTutor ? req.body.dniTutor.trim() : undefined,
-      req.body.formaDePago ? req.body.formaDePago.trim() : undefined,
-      req.body.datosBancarios ? req.body.datosBancarios.trim() : undefined,
-      req.body.email ? req.body.email.trim() : undefined,
-      req.body.telefono ? req.body.telefono.trim() : undefined,
-      req.body.curso_id ? req.body.curso_id.trim() : undefined
-    );
+    // encontrado = await modificarAlumno(node 
+    //   req.params.id,
+    //   req.body.nombre ? req.body.nombre.trim() : undefined,
+    //   req.body.apellidos ? req.body.apellidos.trim() : undefined,
+    //   req.body.nombreTutor ? req.body.nombreTutor.trim() : undefined,
+    //   req.body.dniTutor ? req.body.dniTutor.trim() : undefined,
+    //   req.body.formaDePago ? req.body.formaDePago.trim() : undefined,
+    //   req.body.datosBancarios ? req.body.datosBancarios.trim() : undefined,
+    //   req.body.email ? req.body.email.trim() : undefined,
+    //   req.body.curso ? req.body.curso.trim() : undefined
+    // );
 
-    res.status(encontrado ? 200 : 400).json({
-      encontrado: encontrado,
-      mensajes: encontrado
-        ? []
-        : ["Error: alumno no encontrado", `ID: ${req.params.id}`],
-    });
+    // res.status(encontrado ? 200 : 400).json({
+    //   encontrado: encontrado,
+    //   mensajes: encontrado
+    //     ? []
+    //     : ["Error: alumno no encontrado", `ID: ${req.params.id}`],
+    // });
   } catch (error) {
     console.error("Error en la modificación del alumno:", error);
     res.status(500).json({ msg: "Error interno en el servidor" });

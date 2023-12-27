@@ -141,7 +141,35 @@ async function modificarAlumno(id, datosAlumno) {
 
 }
 
-
+/**
+ * Actualiza parcialmente un alumno basado en su ID.
+ * 
+ * Esta función asincrónica intenta actualizar un alumno en la base de datos utilizando el método
+ * `findByIdAndUpdate` de Mongoose. Solo se actualizan los campos proporcionados en el objeto `datosAlumno`.
+ * Si el alumno con el ID especificado no existe, se lanza un error.
+ * 
+ * @param {String} id - El ID único del alumno a actualizar.
+ * @param {Object} datosAlumno - Un objeto que contiene los datos del alumno a actualizar.
+ *    Este objeto puede contener cualquier número de campos correspondientes al esquema del alumno,
+ *    y solo los campos proporcionados serán actualizados.
+ *
+ * @returns {Promise<Object>} - Una promesa que resuelve al objeto del alumno actualizado.
+ *    Si el alumno no se encuentra, la promesa rechaza con un error.
+ *
+ * @throws {Error} - Lanza un error si el alumno con el ID especificado no se encuentra,
+ *    o si ocurre un error durante la operación de actualización.
+ */
+async function modificarAlumnoParcialmente(id, datosAlumno) {
+  try {
+    const alumnoActualizado = await Alumnos.findByIdAndUpdate(id, datosAlumno, { new: true });
+    if (!alumnoActualizado) {
+      throw new Error('alumno no encontrado');
+    }
+    return alumnoActualizado;
+  } catch (error) {
+    throw error;
+  }
+}
 
 // Exporta las funciones para su uso en alumnos.routes.js
 module.exports = {
@@ -149,5 +177,6 @@ module.exports = {
   buscarPorId,
   crearAlumno,
   eliminarAlumno,
-  modificarAlumno
+  modificarAlumno,
+  modificarAlumnoParcialmente
 };
