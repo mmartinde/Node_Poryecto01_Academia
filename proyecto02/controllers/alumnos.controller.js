@@ -63,9 +63,8 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
       datosBancarios: banc,
       email: mail,
       telefono: tlf,
-      cursos: cur
+      curso: cur
     });
-    
     
     // Si el alumno tiene curso asignado, agregalo al curso correspondiente
     if (cur) {

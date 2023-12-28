@@ -99,7 +99,7 @@ router.delete("/:id", async (req, res) => {
 router.put("/:id", validarAlumno, async (req, res) => {
   try {
     const alumnoActualizado = await modificarAlumno(req.params.id, req.body); //req.params.id contiene el id a actualizar, req.body contiene las propiedades del objeto a ser modificadas
-    res.json({ dato: alumnoActualizado });
+    res.json({ msg: alumnoActualizado });
     // let encontrado = null;
     // let msg = [];
 
@@ -134,9 +134,9 @@ router.put("/:id", validarAlumno, async (req, res) => {
 // Ruta para actualizar parcialmente un alumno por su ID.
 router.patch("/:id", validarCamposAlumnos, async (req, res) => {
   try {
-const alumnoActualizado = await modificarAlumnoParcialmente(req.params.id, req.body); //llamo a la funcion asincrona modificarAlumnoParcialmente desde los controllers. Le paso el id y el body de la solicitud.
+    const alumnoActualizado = await modificarAlumnoParcialmente(req.params.id, req.body); //llamo a la funcion asincrona modificarAlumnoParcialmente desde los controllers. Le paso el id y el body de la solicitud.
 
-res.json({ msg: alumnoActualizado });
+    res.json({ msg: alumnoActualizado });
 
     // let encontrado = null;
 
