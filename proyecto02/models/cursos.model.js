@@ -30,7 +30,7 @@ profesores: {
 // Relacion con schema Alumnos usando un array para crear la relacion bidireccional (alumnos y profesores). El array permite incluir la lista de alumnos cursando el curso
 alumnos: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Alumnos'
+    ref: 'Alumnos',
     required: false
 }]
 });
