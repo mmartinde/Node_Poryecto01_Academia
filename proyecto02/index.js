@@ -1,9 +1,21 @@
 // Importa el framework Express para crear la aplicación web.
 const express = require("express");
 const app = express();
+// Importa librerias requeridas para la app
+const jwt = require('jsonwebtoken');
+
+// Importa dotenv para usar las variables de entorno
+require('dotenv').config();
+// Establece variables de entorno
+const dbUri = process.env.DB_URI;
+
+// Establece clave secreta
+app.set('secretKey', process.env.CLAVE_SECRETA);
+
+app.use(express.json()); // Inicializo el 'body-parser' interno de Express
 
 // Importa el middleware bodyParser para procesar datos en las solicitudes.
-var bodyParser = require("body-parser");
+// var bodyParser = require("body-parser");
 
 // Importa el enrutador de usuarios. -> es otro metodo de importar el enrutador
 //const alumnosRouter = require('./routes/alumnos.routes');
@@ -12,16 +24,16 @@ var bodyParser = require("body-parser");
 // Importa la biblioteca de mongoose para la conexión a MongoDB.
 const mongoose = require('mongoose');
 
-// Configura el middleware bodyParser para procesar datos en formato x-www-form-urlencoded y JSON.
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// // Configura el middleware bodyParser para procesar datos en formato x-www-form-urlencoded y JSON.
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 
 
 // Conecta la aplicación a la base de datos de MongoDB.
-mongoose.connect('mongodb+srv://manuma:sZIJnRZAz8s4fwJg@cluster0.hspjmtk.mongodb.net/academia',{
+mongoose.connect(dbUri)
     //useNewUrlParser:true,
     //useUnifiedTopology:true,
-})
+    // })
   .then(() => console.log('Server Connected!'));
 
 

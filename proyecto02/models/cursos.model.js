@@ -22,15 +22,16 @@ aula: {
     type: String,
     required: false,
 },
-profesores_id: {
-    type: Schema.Types.ObjectId,
-    ref: Profesores, // Agregada relacion en Schema con profesores
+profesores: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Profesores', // Agregada relacion en Schema con profesores
     required: true, // Cambio de opcional a requerido, para que cada curso tenga un profesor asignado
 },
 // Relacion con schema Alumnos usando un array para crear la relacion bidireccional (alumnos y profesores). El array permite incluir la lista de alumnos cursando el curso
 alumnos: [{
-    type: Schema.Types.ObjectId,
-    ref: Alumnos
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Alumnos'
+    required: false
 }]
 });
 
