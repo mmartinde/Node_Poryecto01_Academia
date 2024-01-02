@@ -13,6 +13,8 @@ const {
   middlewareCrearProfesor,
 } = require("../middlewares/profesores.middleware");
 
+const { estaLoggeado } = require('../middlewares/autenticador.middleware');
+
 //CRUD
 /** 
  C: CREATE
@@ -133,5 +135,25 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
+<<<<<<< Updated upstream
+=======
+
+// Zona privada Profesores
+//login
+router.post("/login", async (req, res) => {
+  try {
+    const resultado = await login(req.body.usuario, req.body.password);
+    res.json({token:resultado.token, msg:resultado.msg});
+  } catch (error) {
+    res.status(500).json({ msg: "Error interno en el servidor" });
+  }
+});
+
+
+router.get('/privado/:id', estaLoggeado, async (req, res) => {
+  const profesorEncontrado = await buscarPorId(req.params.id);
+  res.json({msg: 'bienvenido a tu perfil '+ profesorEncontrado.usuario})
+});
+>>>>>>> Stashed changes
 // Exportar la información entre ficheros, para ser importado desde otro fichero
 module.exports = router;
