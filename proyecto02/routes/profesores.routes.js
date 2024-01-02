@@ -7,6 +7,7 @@ const {
   crearProfesor,
   eliminarProfesor,
   modificarProfesor,
+  login,
 } = require("../controllers/profesores.controller");
 
 const {
@@ -129,6 +130,16 @@ router.patch("/:id", async (req, res) => {
     });
   } catch (error) {
     console.error("Error en la modificación del profesor:", error);
+    res.status(500).json({ msg: "Error interno en el servidor" });
+  }
+});
+
+//login
+router.post("/login", async (req, res) => {
+  try {
+    const resultado = await login(req.body.usuario, req.body.password);
+    res.json({token:resultado.token, msg:resultado.msg});
+  } catch (error) {
     res.status(500).json({ msg: "Error interno en el servidor" });
   }
 });
