@@ -16,6 +16,7 @@ const {
 
 const { estaLoggeado } = require('../middlewares/autenticador.middleware');
 
+const { encriptarPassword } = require('../helpers/encriptador');
 
 //obtengo todos los productos de la BBDD
 router.get("/", async (req, res) => {
@@ -48,12 +49,16 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", middlewareCrearProfesor, async (req, res) => {
   try {
+    // Encripta la contraseña antes de pasarla a crearProfesor
+    const passwordEncriptada = await encriptarPassword(req.body.password);
+
     const profesorCreado = await crearProfesor(
       req.body.nombre.trim(),
       req.body.usuario.trim(),
-      req.body.password,
+      passwordEncriptada, // Usa la contraseña encriptada
       req.body.rol.trim()
     );
+
     res.json({ msg: "Profesor creado correctamente" });
   } catch (error) {
     console.log(String(error));
