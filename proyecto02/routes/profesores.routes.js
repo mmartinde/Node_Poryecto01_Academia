@@ -15,14 +15,6 @@ const {
 
 const { estaLoggeado } = require('../middlewares/autenticador.middleware');
 
-//CRUD
-/** 
- C: CREATE
- R: READ
- U: UPDATE - PUT/PATCH
- D: DELETE
-*/
-
 //obtengo todos los productos de la BBDD
 router.get("/", async (req, res) => {
   try {
