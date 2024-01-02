@@ -1,12 +1,21 @@
-//importar fichero .env con las claves de seguridad
-require('dotenv').config();
-
 // Importa el framework Express para crear la aplicación web.
 const express = require("express");
 const app = express();
+// Importa librerias requeridas para la app
+const jwt = require('jsonwebtoken');
+
+// Importa dotenv para usar las variables de entorno
+require('dotenv').config();
+// Establece variables de entorno
+const CONNECTIONSTRING = process.env.CONNECTIONSTRING;
+
+// Establece clave secreta
+app.set('secretKey', process.env.JWTSECRET);
+
+app.use(express.json()); // Inicializo el 'body-parser' interno de Express
 
 // Importa el middleware bodyParser para procesar datos en las solicitudes.
-var bodyParser = require("body-parser");
+// var bodyParser = require("body-parser");
 
 // Importa el enrutador de usuarios. -> es otro metodo de importar el enrutador
 //const alumnosRouter = require('./routes/alumnos.routes');
@@ -15,18 +24,16 @@ var bodyParser = require("body-parser");
 // Importa la biblioteca de mongoose para la conexión a MongoDB.
 const mongoose = require('mongoose');
 
-// Configura el middleware bodyParser para procesar datos en formato x-www-form-urlencoded y JSON.
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// // Configura el middleware bodyParser para procesar datos en formato x-www-form-urlencoded y JSON.
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 
-//Creación de la secret key (clave valor)
-app.set("secretKey", process.env.JWTSECRET);
 
 // Conecta la aplicación a la base de datos de MongoDB.
-mongoose.connect(process.env.CONNECTIONSTRING,{
+mongoose.connect(CONNECTIONSTRING)
     //useNewUrlParser:true,
     //useUnifiedTopology:true,
-})
+    // })
   .then(() => console.log('Server Connected!'));
 
 
@@ -41,10 +48,16 @@ app.use('/alumnos',require('./routes/alumnos.routes'));
 app.use('/cursos',require('./routes/cursos.routes'));
 app.use('/profesores',require('./routes/profesores.routes'));
 
+//es otra forma de importar el enrutador para manejar la ruta '/cursos' y '/alumnos'.
+//app.use('/productos', productoRouter);
+//app.use('/alumnos',alumnosRouter);
+
+
+
 
 // Inicia el servidor web en el puerto 3000.
 app.listen(process.env.PORT, ()=>{
-  console.log ('Server listening on port 3000');
+  console.log (`Server listening on port ${process.env.PORT}`); // Deberia cambiarse a "Servidor activo, o Server Up and Running" para mantener confidencialidad del puerto abierto
 });
 
 

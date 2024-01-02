@@ -14,13 +14,8 @@ const {
   middlewareCrearProfesor,
 } = require("../middlewares/profesores.middleware");
 
-//CRUD
-/** 
- C: CREATE
- R: READ
- U: UPDATE - PUT/PATCH
- D: DELETE
-*/
+const { estaLoggeado } = require('../middlewares/autenticador.middleware');
+
 
 //obtengo todos los productos de la BBDD
 router.get("/", async (req, res) => {
@@ -134,6 +129,8 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
+// Zona privada Profesores
+
 //login
 router.post("/login", async (req, res) => {
   try {
@@ -142,6 +139,11 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     res.status(500).json({ msg: "Error interno en el servidor" });
   }
+});
+
+router.get('/privado/:id', estaLoggeado, async (req, res) => {
+  const profesorEncontrado = await buscarPorId(req.params.id);
+  res.json({msg: 'bienvenido a tu perfil '+ profesorEncontrado.usuario})
 });
 
 // Exportar la información entre ficheros, para ser importado desde otro fichero
