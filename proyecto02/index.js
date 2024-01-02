@@ -1,3 +1,6 @@
+//importar fichero .env con las claves de seguridad
+require('dotenv').config();
+
 // Importa el framework Express para crear la aplicación web.
 const express = require("express");
 const app = express();
@@ -16,9 +19,11 @@ const mongoose = require('mongoose');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+//Creación de la secret key (clave valor)
+app.set("secretKey", process.env.JWTSECRET);
 
 // Conecta la aplicación a la base de datos de MongoDB.
-mongoose.connect('mongodb+srv://manuma:sZIJnRZAz8s4fwJg@cluster0.hspjmtk.mongodb.net/academia',{
+mongoose.connect(process.env.CONngit ECTIONSTRING,{
     //useNewUrlParser:true,
     //useUnifiedTopology:true,
 })
@@ -36,15 +41,9 @@ app.use('/alumnos',require('./routes/alumnos.routes'));
 app.use('/cursos',require('./routes/cursos.routes'));
 app.use('/profesores',require('./routes/profesores.routes'));
 
-//es otra forma de importar el enrutador para manejar la ruta '/cursos' y '/alumnos'.
-//app.use('/productos', productoRouter); 
-//app.use('/alumnos',alumnosRouter);
-
-
-
 
 // Inicia el servidor web en el puerto 3000.
-app.listen(3000, ()=>{
+app.listen(process.env.PORT, ()=>{
   console.log ('Server listening on port 3000');
 });
 
