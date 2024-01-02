@@ -7,7 +7,7 @@ const {
   crearProfesor,
   eliminarProfesor,
   modificarProfesor,
-} = require("../controllers/profesores.controller");
+} = require("../helpers/profesores.controller");
 
 const {
   middlewareCrearProfesor,
