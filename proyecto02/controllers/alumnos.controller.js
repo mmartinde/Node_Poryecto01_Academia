@@ -7,28 +7,28 @@ const Cursos = require("../models/cursos.model"); // Importa schema de cursos
  * @returns {Promise<Array>} Un array que contiene todos los alumnos.
  */
 async function buscarTodos() {
-  const usuario = await Alumnos.find();
-  return usuario;
+  try{
+    const alumnos = await Alumnos.find();
+    return alumnos;
+  } catch (error) {
+    throw new Error('Error al buscar lista de alumnos')
+  }
 }
 
 /**
  * Busca un alumno por su ID.
  *
  * Esta función realiza una búsqueda en la base de datos para encontrar un alumno específico
- * utilizando su ID como parámetro. Utiliza el método `populate` para reemplazar el campo
- * 'curso_id' con los datos detallados del curso asociado, en lugar de solo mostrar el ID del curso.
- * 
+ * utilizando su ID como parámetro.
  * @param {String} id El ID del alumno que se desea buscar.
  * @returns {Object|Null} Retorna el objeto del alumno si se encuentra, o null si el alumno no existe.
  */
 async function buscarPorId(id) {
   try {
-    const alumnoEncontrado = await Alumnos.findById(id).populate('curso_id'); //Cambio nombre de variable, para mantener coherencia con la app. Uso el metodo .populate en 'curso_id' para mostrar curso, y no el ID del curso solamente
-    if (!alumnoEncontrado) {
-      return res.status(404).json({ msg: 'alumno no encontrado'});
-    }
+    const alumnoEncontrado = await Alumnos.findById(id); //Cambio nombre de variable, para mantener coherencia con la app.
+    return (alumnoEncontrado); //retorna el alumno, o null si no existe
   } catch (error) {
-    res.status(500).json({ msg: 'error'})
+    throw new Error('Error al buscar alumno por ID')
   }
 }
 
@@ -46,7 +46,7 @@ async function buscarPorId(id) {
  * @param {String} pag Forma de pago del curso.
  * @param {String} banc Datos bancarios para el pago.
  * @param {String} mail Email del alumno.
- * @param {String} tlf Teléfono de contacto del alumno.
+ * @param {Number} tlf Teléfono de contacto del alumno.
  * @param {String} cur ID del curso al cual asignar al alumno (opcional).
  * @returns {Object} El objeto del alumno creado.
  */
@@ -54,7 +54,7 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
   //Trycatch para manejar los casos de alumnos con curso asignado, y sin ellos
   try {
     //Crear el nuevo alumno
-    const nuevoAlumno = new Alumno({
+    const nuevoAlumno = new Alumnos({
       nombre: nom,
       apellidos: ape,
       nombreTutor: tuto,
@@ -63,26 +63,28 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
       datosBancarios: banc,
       email: mail,
       telefono: tlf,
-      curso_id: cur
+      curso: cur
     });
     
-    await nuevoAlumno.save();
-
     // Si el alumno tiene curso asignado, agregalo al curso correspondiente
-    if (req.body.curso_id) {
-      const curso = await Cursos.findById(req.body.curso_id);
+    if (cur) {
+      const curso = await Cursos.findById(cur);
       if (curso) {
         curso.alumnos.push(nuevoAlumno._id); //'.alumnos' hace referencia a la propiedad 'alumnos' en el esquema (el array que contendra la lista de objetos con los alumnos)
-
+        
         await curso.save();
+      } else {
+        throw new Error('Curso no encontrado');
       }
     }
     
-    res.status(201).json({ msg: `alumno: ${nuevoAlumno} creado`}) //devuelvo codigo 201. Significa que la peticion ha sido exitosa y como resultado se ha creado el alumno (nuevo recurso)
+    await nuevoAlumno.save();
+    return nuevoAlumno;
+
+  } catch (error) {
+    console.log(error)
+    throw new Error('Error al crear alumno')
   }
-  return nuevoAlumno;
-} catch (error) {
-  res.status(500).json({ msg: 'error'}) //devuelvo codigo 500. Es un codigo general que me permite proteger al servidor e informar que algo salio mal.
 }
 
 /**
@@ -91,40 +93,82 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
  * @returns {Promise<Object|null>} Un objeto que representa al alumno eliminado o null si no se encuentra.
  */
 async function eliminarAlumno(id) {
-  const alumnoBorrado = await Alumnos.findByIdAndDelete(id);
-  return alumnoBorrado;
+  try {
+    const alumnoBorrado = await Alumnos.findByIdAndDelete(id);
+    return alumnoBorrado;
+    
+  } catch (error) {
+    throw new Error('Error al eliminar Alumno');
+  }
 }
 
 /**
- * Modifica un alumno por su ID.
- * @param {string} id - El ID del alumno a modificar.
- * @param {string} nom - Nuevo nombre del alumno.
- * @param {string} ape - Nuevos apellidos del alumno.
- * @param {string} tuto - Nuevo nombre del tutor del alumno.
- * @param {string} dni - Nuevo DNI del tutor del alumno.
- * @param {string} pag - Nueva forma de pago del alumno.
- * @param {string} banc - Nuevos datos bancarios del alumno.
- * @param {string} mail - Nuevo correo electrónico del alumno.
- * @param {string} tlf - Nuevo número de teléfono del alumno.
- * @param {string} cur - Nuevo ID del curso al que pertenece el alumno.
- * @returns {Promise<Object|null>} Un objeto que representa al alumno modificado o null si no se encuentra.
+ * Modifica un alumno existente por su ID (actualiza).
+ * 
+ * Esta función busca primero un alumno por su ID para verificar si existe.
+ * Si el alumno existe, procede a actualizarlo con los datos proporcionados.
+ * Si el alumno no se encuentra, lanza un error.
+ *
+ * @param {string} id - El ID único del alumno a actualizar.
+ * @param {Object} datosAlumno - Un objeto que contiene los datos del alumno a actualizar. Este objeto podría incluir campos como nombre, apellidos, email, etc.
+ * @returns {Promise<Object>} - Promesa que resuelve al objeto del alumno actualizado. Si el alumno no se encuentra, la promesa rechaza con un error.
+ * @throws {Error} - Lanza un error si el alumno no se encuentra en la base de datos.
+ *
  */
-async function modificarAlumno(id, nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
-  const alumnoModificar = await Alumnos.findByIdAndUpdate(id, {
-    nombre: nom,
-    apellidos: ape,
-    nombreTutor: tuto,
-    dniTutor: dni,
-    formaDePago: pag,
-    datosBancarios: banc,
-    email: mail,
-    telefono: tlf,
-    curso_id: cur
-  });
-  return alumnoModificar;
+async function modificarAlumno(id, datosAlumno) {
+  // Verificar si el alumno existe
+  const alumnoExistente = await Alumnos.findById(id);
+  if (!alumnoExistente) {
+    throw new Error("Alumno no encontrado");
+  }
+  // Realizar la actualizacion
+  const alumnoActualizado = await Alumnos.findByIdAndUpdate(id, datosAlumno, { new: true }); //actualiza el objeto del alumno encontrado por ID, la opcion {new: true} de mongoose para que se devuelva el documento modificado, en vez del original (foundbyIdAndUpdate, devuelve el objeto original)
+  return alumnoActualizado;
+
+  //   const alumnoModificar = await Alumnos.findByIdAndUpdate(id, {
+//     nombre: nom,
+//     apellidos: ape,
+//     nombreTutor: tuto,
+//     dniTutor: dni,
+//     formaDePago: pag,
+//     datosBancarios: banc,
+//     email: mail,
+//     telefono: tlf,
+//     curso: cur
+//   });
+//   return alumnoModificar;
+
 }
 
-
+/**
+ * Actualiza parcialmente un alumno basado en su ID.
+ * 
+ * Esta función asincrónica intenta actualizar un alumno en la base de datos utilizando el método
+ * `findByIdAndUpdate` de Mongoose. Solo se actualizan los campos proporcionados en el objeto `datosAlumno`.
+ * Si el alumno con el ID especificado no existe, se lanza un error.
+ * 
+ * @param {String} id - El ID único del alumno a actualizar.
+ * @param {Object} datosAlumno - Un objeto que contiene los datos del alumno a actualizar.
+ *    Este objeto puede contener cualquier número de campos correspondientes al esquema del alumno,
+ *    y solo los campos proporcionados serán actualizados.
+ *
+ * @returns {Promise<Object>} - Una promesa que resuelve al objeto del alumno actualizado.
+ *    Si el alumno no se encuentra, la promesa rechaza con un error.
+ *
+ * @throws {Error} - Lanza un error si el alumno con el ID especificado no se encuentra,
+ *    o si ocurre un error durante la operación de actualización.
+ */
+async function modificarAlumnoParcialmente(id, datosAlumno) {
+  try {
+    const alumnoActualizado = await Alumnos.findByIdAndUpdate(id, datosAlumno, { new: true });
+    if (!alumnoActualizado) {
+      throw new Error('alumno no encontrado');
+    }
+    return alumnoActualizado;
+  } catch (error) {
+    throw error;
+  }
+}
 
 // Exporta las funciones para su uso en alumnos.routes.js
 module.exports = {
@@ -132,5 +176,6 @@ module.exports = {
   buscarPorId,
   crearAlumno,
   eliminarAlumno,
-  modificarAlumno
+  modificarAlumno,
+  modificarAlumnoParcialmente
 };

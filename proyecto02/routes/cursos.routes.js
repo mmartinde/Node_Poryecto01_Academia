@@ -2,6 +2,9 @@ const express = require("express");
 
 const router = express.Router();
 
+//Importa el modelo de cursos para usar el middleware de validacion
+const Cursos = require('../models/cursos.model')
+
 const {
   buscarTodos,
   buscarPorId,
@@ -11,14 +14,11 @@ const {
 } = require("../controllers/cursos.controller");
 
 const { validarCrearCurso } = require("../helpers/validadores");
+const { validarCamposPatch } = require('../middlewares/validadorPatch.middleware');
+const { validarCurso } = require('../middlewares/cursos.middleware');
 
-//CRUD
-/** 
- C: CREATE
- R: READ
- U: UPDATE - PUT/PATCH
- D: DELETE
-*/
+// usa el validador de campos, y asigna los campos validos a una variable
+const validarCamposCurso = validarCamposPatch(Cursos);
 
 //obtengo todos los productos de la BBDD
 router.get("/", async (req, res) => {
@@ -46,26 +46,17 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//Añadimos un procunto nuevo a la BBDD
-router.post("/", async (req, res) => {
+//Crear un curso nuevo
+router.post("/", validarCurso, async (req, res) => {
   try {
-    //const parseData = JSON.parse(responseData);
-    //console.log(parseData);
-    //guardado en al BBDD
-    const cursoCreado = await crearCurso(
-      req.body.nivel.trim(),
-      req.body.dia.trim(),
-      req.body.hora.trim(),
-      req.body.aula.trim(),
-      req.body.profesor.trim()
-    );
+    const cursoCreado = await crearCurso(req.body)
     if (cursoCreado) {
-      res.json({ msg: "Curso creado correctamente" });
+      res.status(201).json({ msg: "Curso creado correctamente" });
     } else {
       res.status(400).json({ msg: "error: faltan datos" });
     }
   } catch (error) {
-    console.log(String(error));
+    console.error(String(error));
     res.status(500).json({ msg: "error interno" });
   }
 });
@@ -86,57 +77,25 @@ router.delete("/:id", async (req, res) => {
 });
 
 //Modificación sobre un producto en BBDD
-router.put("/:id", async (req, res) => {
+router.put("/:id", validarCurso, async (req, res) => {
   try {
-    let encontrado = null;
-    let msg = [];
-    //comprobación de todos los atributos modificables vienen completos. PUT debe ser completamente ATOMICO
-    const resultadoValidacion = validarCrearCurso(req.body);
-    if (!resultadoValidacion.valido) {
-      res.status(400).json({ msg: resultadoValidacion.mensaje });
-    } else {
-      encontrado = await modificarCurso(
-        req.params.id,
-        req.body.nivel.trim(),
-        req.body.dia.trim(),
-        req.body.hora.trim(),
-        req.body.aula.trim(),
-        req.body.profesor.trim()
-      );
-      res.json(
-        encontrado === null
-          ? { msg: "error: Curso no encontrado" }
-          : { dato: encontrado, mensaje: msg }
-      );
-    }
+    const cursoActualizado = await modificarCurso(req.params.id, req.body);
+    res.json({ msg: cursoActualizado});
   } catch (error) {
-    console.error("Error en la modificación del curso:", error);
-    res.status(500).json({ msg: "Error interno en el servidor" });
+    console.error('Error en la modificacion del curso:', error);
+    res.status(500).json({ msg: 'Error interno en el servidor'});
   }
 });
 
-router.patch("/:id", async (req, res) => {
- try {
-   let encontrado = null;
-   // solamente varío los atributos que yo considero que se podrían tocar
-   encontrado = await modificarCurso(
-     req.params.id,
-     req.body.nivel ? req.body.nivel.trim() : undefined,
-     req.body.dia ? req.body.dia.trim() : undefined,
-     req.body.hora ? req.body.hora.trim() : undefined,
-     req.body.aula ? req.body.aula.trim() : undefined,
-     req.body.profesor ? req.body.profesor.trim() : undefined
-   );
- 
-   res.status(encontrado ? 200 : 400).json({
-      encontrado: encontrado,
-      mensajes: encontrado ? [] : ["Error: curso no encontrado", `ID: ${req.params.id}`],
-    }
-   );
+router.patch("/:id", validarCamposCurso, async (req, res) => {
+  try{
+    const  cursoActualizado = await modificarCurso(req.params.id, req.body);
+    res.json({ msg: cursoActualizado });
+
   } catch (error) {
-    console.error("Error en la modificación del curso:", error);
-    res.status(500).json({ msg: "Error interno en el servidor" });
- }
+    console.errror('Error en la modificacion del curso', error);
+    res.status(500).json({ msg: 'Error intero del servidor' })
+  }
 });
 
 // Exportar la información entre ficheros, para ser importado desde otro fichero
