@@ -14,17 +14,7 @@ const {
 } = require("../middlewares/profesores.middleware");
 
 const { estaLoggeado } = require('../middlewares/autenticador.middleware');
-<<<<<<< Updated upstream
-=======
 
-//CRUD
-/** 
- C: CREATE
- R: READ
- U: UPDATE - PUT/PATCH
- D: DELETE
-*/
->>>>>>> Stashed changes
 
 //obtengo todos los productos de la BBDD
 router.get("/", async (req, res) => {
