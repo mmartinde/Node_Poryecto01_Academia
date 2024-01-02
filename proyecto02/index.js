@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 app.set("secretKey", process.env.JWTSECRET);
 
 // Conecta la aplicación a la base de datos de MongoDB.
-mongoose.connect(process.env.CONngit ECTIONSTRING,{
+mongoose.connect(process.env.CONNECTIONSTRING,{
     //useNewUrlParser:true,
     //useUnifiedTopology:true,
 })
