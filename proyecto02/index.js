@@ -7,10 +7,10 @@ const jwt = require('jsonwebtoken');
 // Importa dotenv para usar las variables de entorno
 require('dotenv').config();
 // Establece variables de entorno
-const dbUri = process.env.DB_URI;
+const CONNECTIONSTRING = process.env.CONNECTIONSTRING;
 
 // Establece clave secreta
-app.set('secretKey', process.env.CLAVE_SECRETA);
+app.set('secretKey', process.env.JWTSECRET);
 
 app.use(express.json()); // Inicializo el 'body-parser' interno de Express
 
@@ -30,7 +30,7 @@ const mongoose = require('mongoose');
 
 
 // Conecta la aplicación a la base de datos de MongoDB.
-mongoose.connect(dbUri)
+mongoose.connect(CONNECTIONSTRING)
     //useNewUrlParser:true,
     //useUnifiedTopology:true,
     // })
