@@ -14,6 +14,17 @@ const {
 } = require("../middlewares/profesores.middleware");
 
 const { estaLoggeado } = require('../middlewares/autenticador.middleware');
+<<<<<<< Updated upstream
+=======
+
+//CRUD
+/** 
+ C: CREATE
+ R: READ
+ U: UPDATE - PUT/PATCH
+ D: DELETE
+*/
+>>>>>>> Stashed changes
 
 //obtengo todos los productos de la BBDD
 router.get("/", async (req, res) => {
@@ -127,8 +138,7 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-<<<<<<< Updated upstream
-=======
+
 
 // Zona privada Profesores
 //login
@@ -146,6 +156,6 @@ router.get('/privado/:id', estaLoggeado, async (req, res) => {
   const profesorEncontrado = await buscarPorId(req.params.id);
   res.json({msg: 'bienvenido a tu perfil '+ profesorEncontrado.usuario})
 });
->>>>>>> Stashed changes
+
 // Exportar la información entre ficheros, para ser importado desde otro fichero
 module.exports = router;
