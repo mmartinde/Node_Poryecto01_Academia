@@ -1,9 +1,11 @@
+const Alumnos = require("../models/alumnos.model");
 const Cursos = require("../models/cursos.model");
-const Curso = require("../models/cursos.model");
+
+
 
 async function buscarTodos() {
   try {
-    const cursos = await Curso.find();
+    const cursos = await Cursos.find();
     return cursos
   } catch (error) {
     throw new Error('Error al buscar lista de alumnos')
@@ -12,7 +14,7 @@ async function buscarTodos() {
 
 async function buscarPorId(id) {
   try {
-    const cursoEncontrado = await Curso.findById(id);
+    const cursoEncontrado = await Cursos.findById(id);
     return cursoEncontrado;
   } catch (error) {
     throw new Error ('Error al buscar curso por ID');
@@ -40,7 +42,7 @@ async function crearCurso(datosCurso) {
 
 async function eliminarCurso(id) {
   try {
-    const cursoBorrado = await Curso.findByIdAndDelete(id);
+    const cursoBorrado = await Cursos.findByIdAndDelete(id);
     return cursoBorrado;
   } catch (error) {
     throw new Error('Error al eliminar curso');
@@ -66,7 +68,7 @@ async function eliminarCurso(id) {
 async function modificarCurso(id, datosCurso) {
   try {
     //Realizar la actualizacion si el curso existe
-    const cursoActualizado = await Curso.findByIdAndUpdate(id, datosCurso, {new: true });
+    const cursoActualizado = await Cursos.findByIdAndUpdate(id, datosCurso, {new: true });
     if (!cursoActualizado) {
       throw new Error('Curso no encontrado', error);
     }

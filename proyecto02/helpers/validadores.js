@@ -24,8 +24,8 @@ function validarCrearCurso (body){
         body.hora.trim() === "" ||
         (body.aula !== undefined &&
         body.aula.trim() === "") || //Ajusto la condicion de aula, ya que en el schema es opcional. Permito que el campo aula sea indefinido.
-        body.profesores_id === undefined ||
-        body.profesores_id.trim() === ""
+        body.profesores === undefined ||
+        body.profesores.trim() === ""
       ) {
        return{
         valido:false,

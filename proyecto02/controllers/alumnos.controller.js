@@ -68,14 +68,9 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
     
     // Si el alumno tiene curso asignado, agregalo al curso correspondiente
     if (cur) {
-      const curso = await Cursos.findById(cur);
-      if (curso) {
-        curso.alumnos.push(nuevoAlumno._id); //'.alumnos' hace referencia a la propiedad 'alumnos' en el esquema (el array que contendra la lista de objetos con los alumnos)
-        
-        await curso.save();
-      } else {
-        throw new Error('Curso no encontrado');
-      }
+      nuevoAlumno.curso = cur;
+      // encuentra el curso, y anade el alumno al curso (usando metodos de MongoDB)
+      await Cursos.findByIdAndUpdate(cur, {$push: { alumnos: nuevoAlumno._id } });
     }
     
     await nuevoAlumno.save();

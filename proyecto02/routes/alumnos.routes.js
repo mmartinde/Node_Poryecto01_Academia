@@ -71,7 +71,7 @@ router.post("/", async (req, res) => {
       req.body.datosBancarios?.trim(),
       req.body.email?.trim(),
       req.body.telefono,
-      req.body.curso_id?.trim()
+      req.body.curso?.trim()
     );
     res.status(201).json({ msg: 'alumno creado correctamente' })
     } catch (error) {
