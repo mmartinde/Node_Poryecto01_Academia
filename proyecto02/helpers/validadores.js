@@ -91,7 +91,7 @@ function validarCrearProfesor (body){
     ) {
      return{
       valido:false,
-      mensaje: "faltan datos del curso"
+      mensaje: "faltan datos del profesor"
      }
     }
     else{
@@ -102,18 +102,6 @@ function validarCrearProfesor (body){
     }
 }
 
-// function validarPatchAlumnos(req, res, next) {
-//   const camposValidos = ['nombre', 'apellidos', 'nombreTutor', 'dniTutor', 'formaDePago', 'datosBancarios', 'email', 'telefono', 'curso'];
-//   const camposSolicitud Object.keys(req.body);
-
-//   for (let campo of camposSolicitud) {
-//     if (!camposValidos.includes(campo)) {
-//       return res.status(400).json({ msg: `Campo no valido: ${campo}` })
-//     }
-//   }
-  
-//   next();
-// }
 
 module.exports ={
   validarCrearCurso,

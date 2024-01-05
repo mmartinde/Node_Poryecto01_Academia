@@ -17,7 +17,7 @@ const ProfesoresSchema = new Schema({
         require: true,
     },
     rol: {
-        type: String,
+        type: Stgitring,
         enum: ['admin', 'prof', 'alum'], //Enum permite designar solo estos roles (la BD esperara solo uno de los 3 valores designados)
         default: 'prof' //establece como rol predefinido para profesores el rol de profesor
     }
