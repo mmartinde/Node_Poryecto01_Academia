@@ -24,14 +24,6 @@ const { validarCamposPatch } = require("../middlewares/validadorPatch.middleware
 // usa el validador de campos, y asigna los campos validos a una variable
 const validarCamposAlumnos = validarCamposPatch(Alumnos);
 
-//CRUD
-/** 
- C: CREATE
- R: READ
- U: UPDATE - PUT/PATCH
- D: DELETE
-*/
-
 // Ruta para obtener todos los alumnos.
 router.get("/", async (req, res) => {
   try {
@@ -100,34 +92,9 @@ router.put("/:id", validarAlumno, async (req, res) => {
   try {
     const alumnoActualizado = await modificarAlumno(req.params.id, req.body); //req.params.id contiene el id a actualizar, req.body contiene las propiedades del objeto a ser modificadas
     res.json({ msg: alumnoActualizado });
-    // let encontrado = null;
-    // let msg = [];
-
-    // // Validación de datos antes de intentar la modificación.
-    // const resultadoValidacion = validarCrearAlumno(req.body);
-    // if (!resultadoValidacion.valido) {
-    //   res.status(400).json({ msg: resultadoValidacion.mensaje });
-    // } else {
-    //   // Modificación del alumno.
-    //   encontrado = await modificarAlumno(
-    //     req.params.id,
-    //     req.body.nombre,
-    //     req.body.apellidos,
-    //     req.body.nombreTutor,
-    //     req.body.dniTutor,
-    //     req.body.formaDePago,
-    //     req.body.datosBancarios,
-    //     req.body.email,
-    //     req.body.telefono,
-    //     req.body.curso
-    //   );
-    //   res.json(encontrado === null ? { msg: "error: alumno no encontrado" } : { dato: encontrado, mensaje: msg });
-    // }
   } catch (error) {
     console.error("Error en la mofidicacion del alumno:", error);
     res.status(500).json({ msg: "error interno ene l servidor" })
-    // console.error("Error en la modificación del alumno:", error);
-    // res.status(500).json({ msg: "Error interno en el servidor" });
   }
 });
 
@@ -135,30 +102,7 @@ router.put("/:id", validarAlumno, async (req, res) => {
 router.patch("/:id", validarCamposAlumnos, async (req, res) => {
   try {
     const alumnoActualizado = await modificarAlumnoParcialmente(req.params.id, req.body); //llamo a la funcion asincrona modificarAlumnoParcialmente desde los controllers. Le paso el id y el body de la solicitud.
-
     res.json({ msg: alumnoActualizado });
-
-    // let encontrado = null;
-
-    // Modificación parcial del alumno.
-    // encontrado = await modificarAlumno(node 
-    //   req.params.id,
-    //   req.body.nombre ? req.body.nombre.trim() : undefined,
-    //   req.body.apellidos ? req.body.apellidos.trim() : undefined,
-    //   req.body.nombreTutor ? req.body.nombreTutor.trim() : undefined,
-    //   req.body.dniTutor ? req.body.dniTutor.trim() : undefined,
-    //   req.body.formaDePago ? req.body.formaDePago.trim() : undefined,
-    //   req.body.datosBancarios ? req.body.datosBancarios.trim() : undefined,
-    //   req.body.email ? req.body.email.trim() : undefined,
-    //   req.body.curso ? req.body.curso.trim() : undefined
-    // );
-
-    // res.status(encontrado ? 200 : 400).json({
-    //   encontrado: encontrado,
-    //   mensajes: encontrado
-    //     ? []
-    //     : ["Error: alumno no encontrado", `ID: ${req.params.id}`],
-    // });
   } catch (error) {
     console.error("Error en la modificación del alumno:", error);
     res.status(500).json({ msg: "Error interno en el servidor" });
