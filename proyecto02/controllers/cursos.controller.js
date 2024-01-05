@@ -5,7 +5,7 @@ const Cursos = require("../models/cursos.model");
 
 async function buscarTodos() {
   try {
-    const cursos = await Cursos.find();
+    const cursos = await Cursos.find().populate('alumnos', '-_id nombre apellidos');
     return cursos
   } catch (error) {
     throw new Error('Error al buscar lista de alumnos')
@@ -14,9 +14,10 @@ async function buscarTodos() {
 
 async function buscarPorId(id) {
   try {
-    const cursoEncontrado = await Cursos.findById(id);
+    const cursoEncontrado = await Cursos.findById(id).populate('alumnos', 'nombre apellidos');
     return cursoEncontrado;
   } catch (error) {
+    console.log(error)
     throw new Error ('Error al buscar curso por ID');
   }
 }
