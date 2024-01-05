@@ -121,7 +121,7 @@ async function login(usu, pwd) {
   if (usuarioEncontrado) {
     if (usuarioEncontrado.password === pwd) {
       const token = jwt.sign(
-        { id: usuarioEncontrado._id, name: usuarioEncontrado.usuario },
+        { id: usuarioEncontrado._id, name: usuarioEncontrado.usuario, rol: usuarioEncontrado.rol },
         process.env.JWTSECRET,
         { expiresIn: "1h" }
         );

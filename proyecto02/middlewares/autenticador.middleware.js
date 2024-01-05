@@ -24,56 +24,6 @@ const { compararPassword } = require('../helpers/encriptador');
 //  * @throws {Error} Si la autenticación falla (ya sea porque el usuario no existe o la contraseña es incorrecta),
 //  *                 o si ocurre un error en el proceso de autenticación, se lanza un error.
 //  */
-// async function autenticarUsuario(datosUsuario) {
-//     const { usuario, password } = datosUsuario
-//     try {
-//         // encuentra el profesor por su usuario
-//         const profesor = await Profesores.findOne({usuario});
-    
-//         // comprueba si el profesor existe y la contrasena es correcta
-//         if (profesor && bcrypt.compare(password, profesor.password)) {
-//             // genera y retorna un token con JWT que expira en 1 hora
-//             const token = jwt.sign({ profesorId: profesor._id, rol: profesor.rol }, process.env.CLAVE_SECRETA, {expiresIn: '1h'});
-            
-//             return token;
-//         } else {
-//             throw new Error ('Autenticacion fallida');
-//         }
-        
-//     } catch (error) {
-//         throw new Error('Error en el proceso de autenticacion');
-//     }
-// }
-
-// async function login(datosUsuario) {
-//     const { usuario, password } = datosUsuario
-//     const usuarioEncontrado = await Profesores.findOne({ usuario });
-
-//     if (usuarioEncontrado) {
-//         resultadoComparacion = await compararPassword(usuarioEncontrado.password, password);
-//         if (resultadoComparacion) {
-//             const token = jwt.sign( { id: usuarioEncontrado._id, usuario: usuarioEncontrado.usuario }, process.env.CLAVE_SECRETA, {expiresIn: '1h'});
-//             return {
-//                 usuario: usuarioEncontrado,
-//                 token: token,
-//                 msg: null
-//             }
-//         } else {
-//             return {
-//                 usuario: null,
-//                 token: null,
-//                 msg: 'password incorrecto'
-//             }
-//         }
-//         } else {
-//             return {
-//                 usuario: null,
-//                 token: null,
-//                 msg: 'email no encontrado'
-//             }
-//     }
-// }
-
 function estaLoggeado(req, res, next) {
     if (req.query.token) {
         try{
@@ -81,7 +31,7 @@ function estaLoggeado(req, res, next) {
             if(resultado.id === req.params.id){
                 next();
             } else {
-                res.status(403).json({msg: 'no tienes permiso paraacceder a este recurso'});
+                res.status(403).json({msg: 'no tienes permiso para acceder a este recurso'});
             }
         } catch (error) {
             res.status(401).json({msg: 'token no valido'});

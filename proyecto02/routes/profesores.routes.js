@@ -15,7 +15,8 @@ const {
 } = require("../controllers/profesores.controller");
 
 const {
-  validarProfesor,
+  validarProfesor, 
+  validarRol
 } = require("../middlewares/profesores.middleware");
 
 const { estaLoggeado } = require('../middlewares/autenticador.middleware');
@@ -136,7 +137,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get('/privado/:id', estaLoggeado, async (req, res) => {
+router.get('/privado/:id', estaLoggeado, validarRol, async (req, res) => {
   const profesorEncontrado = await buscarPorId(req.params.id);
   res.json({msg: 'bienvenido a tu perfil '+ profesorEncontrado.usuario})
 });

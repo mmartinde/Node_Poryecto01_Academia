@@ -103,6 +103,8 @@ function validarCrearProfesor (body){
 }
 
 
+
+
 module.exports ={
   validarCrearCurso,
   validarCrearAlumno,
