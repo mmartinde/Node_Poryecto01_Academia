@@ -71,7 +71,6 @@ async function crearAlumno(nom, ape, tuto, dni, pag, banc, mail, tlf, cur) {
       const curso = await Cursos.findById(cur);
       if (curso) {
         curso.alumnos.push(nuevoAlumno._id); //'.alumnos' hace referencia a la propiedad 'alumnos' en el esquema (el array que contendra la lista de objetos con los alumnos)
-        
         await curso.save();
       } else {
         throw new Error('Curso no encontrado');
@@ -124,20 +123,6 @@ async function modificarAlumno(id, datosAlumno) {
   // Realizar la actualizacion
   const alumnoActualizado = await Alumnos.findByIdAndUpdate(id, datosAlumno, { new: true }); //actualiza el objeto del alumno encontrado por ID, la opcion {new: true} de mongoose para que se devuelva el documento modificado, en vez del original (foundbyIdAndUpdate, devuelve el objeto original)
   return alumnoActualizado;
-
-  //   const alumnoModificar = await Alumnos.findByIdAndUpdate(id, {
-//     nombre: nom,
-//     apellidos: ape,
-//     nombreTutor: tuto,
-//     dniTutor: dni,
-//     formaDePago: pag,
-//     datosBancarios: banc,
-//     email: mail,
-//     telefono: tlf,
-//     curso: cur
-//   });
-//   return alumnoModificar;
-
 }
 
 /**

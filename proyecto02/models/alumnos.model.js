@@ -38,7 +38,7 @@ const alumnoSchema = new Schema({
     required: true,
   },
   curso: {
-    type: Schema.Types.ObjectId, // Modifico el tipo para indicar que es una relacion con otro esquema
+    type: mongoose.Schema.Types.ObjectId, // Modifico el tipo para indicar que es una relacion con otro esquema
     ref: 'Cursos', // Referencia al nombre del modelo de cursos (cursos.model.js, lo define como Cursos en modulo de exportacion)
     required: false,
   },

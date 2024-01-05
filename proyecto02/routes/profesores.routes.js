@@ -1,6 +1,10 @@
+// Importa el módulo Express para crear el enrutador.
 const express = require("express");
+
+// Crea una instancia del enrutador de Express.
 const router = express.Router();
 
+// Importa las funciones del controlador y los validadores asociados a los alumnos.
 const {
   buscarTodos,
   buscarPorId,
@@ -11,18 +15,14 @@ const {
 } = require("../controllers/profesores.controller");
 
 const {
-  middlewareCrearProfesor,
+  validarProfesor,
 } = require("../middlewares/profesores.middleware");
 
-//CRUD
-/** 
- C: CREATE
- R: READ
- U: UPDATE - PUT/PATCH
- D: DELETE
-*/
+const { estaLoggeado } = require('../middlewares/autenticador.middleware');
 
-//obtengo todos los productos de la BBDD
+const { encriptarPassword } = require('../helpers/encriptador');
+
+// Ruta para obtener todos los propfesores.
 router.get("/", async (req, res) => {
   try {
     const profesores = await buscarTodos();
@@ -33,8 +33,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-//obtener producto por id de la BBDD
-
+// Ruta para obtener un profesor por su ID.
 router.get("/:id", async (req, res) => {
   try {
     const profesorEncontrado = await buscarPorId(req.params.id);
@@ -49,16 +48,19 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-//Añadimos un procunto nuevo a la BBDD
-
-router.post("/", middlewareCrearProfesor, async (req, res) => {
+// Ruta para crear un nuevo profesor.
+router.post("/", validarProfesor, async (req, res) => {
   try {
+    // Encripta la contraseña antes de pasarla a crearProfesor
+    const passwordEncriptada = await encriptarPassword(req.body.password);
+
     const profesorCreado = await crearProfesor(
       req.body.nombre.trim(),
       req.body.usuario.trim(),
-      req.body.password,
+      passwordEncriptada, // Usa la contraseña encriptada
       req.body.rol.trim()
     );
+
     res.json({ msg: "Profesor creado correctamente" });
   } catch (error) {
     console.log(String(error));
@@ -66,7 +68,7 @@ router.post("/", middlewareCrearProfesor, async (req, res) => {
   }
 });
 
-//Eliminación de un objeto por id de la BBDD
+// Ruta para eliminar un profesor por su ID.
 router.delete("/:id", async (req, res) => {
   try {
     const profesorBorrado = await eliminarProfesor(req.params.id);
@@ -81,30 +83,18 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-//Modificación sobre un producto en BBDD
-router.put("/:id", async (req, res) => {
+// Ruta para actualizar un profeso por su ID.
+router.put("/:id",validarProfesor, async (req, res) => {
   try {
-    let encontrado = null;
-    let msg = [];
-    //comprobación de todos los atributos modificables vienen completos. PUT debe ser completamente ATOMICO
-    const resultadoValidacion = validarCrearProfesor(req.body);
-    if (!resultadoValidacion.valido) {
-      res.status(400).json({ msg: resultadoValidacion.mensaje });
-    } else {
-      encontrado = await modificarProfesor(
+    const profesorActualizado = await modificarProfesor(
         req.params.id,
         req.body.nombre.trim(),
         req.body.usuario.trim(),
         req.body.password,
         req.body.rol.trim()
       );
-      res.json(
-        encontrado === null
-          ? { msg: "error: Profesor no encontrado" }
-          : { dato: encontrado, mensaje: msg }
-      );
-    }
-  } catch (error) {
+      res.json({msg: profesorActualizado });
+    }catch (error) {
     console.error("Error en la modificación del profesor:", error);
     res.status(500).json({ msg: "Error interno en el servidor" });
   }
@@ -134,6 +124,8 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
+// Zona privada Profesores
+
 //login
 router.post("/login", async (req, res) => {
   try {
@@ -142,6 +134,11 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     res.status(500).json({ msg: "Error interno en el servidor" });
   }
+});
+
+router.get('/privado/:id', estaLoggeado, async (req, res) => {
+  const profesorEncontrado = await buscarPorId(req.params.id);
+  res.json({msg: 'bienvenido a tu perfil '+ profesorEncontrado.usuario})
 });
 
 // Exportar la información entre ficheros, para ser importado desde otro fichero
